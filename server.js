@@ -1,16 +1,20 @@
 const { ApolloServer } = require('apollo-server');
 const {sequelize} = require('./models')
 
+
+
 // The GraphQL schema
 const typeDefs = require('./graphql/typeDef')
 
 // A map of functions which return data for the schema.
-const resolvers = require('./graphql/resolver')
+const resolvers = require('./graphql/resolvers')
+
+const contextMiddleWare = require('./util/contextMiddleware')
 
 const server = new ApolloServer({
   typeDefs,
   resolvers,
-  context: ctx => ctx
+  context: contextMiddleWare
 });
 
 server.listen().then(({ url }) => {
