@@ -55,7 +55,7 @@ module.exports = {
 
             if(!correctPassword){
                 errors.password = 'Password is incorrect'
-                throw new AuthenticationError('password is incorrect')
+                throw new UserInputError('password is incorrect', {errors})
             }
 
             const token = jwt.sign( { username}, JWT_SECRET, { expiresIn: '1h' });

@@ -1,6 +1,7 @@
 import React, {useState} from 'react'
 import {Container, Row, Col, Form, Button} from 'react-bootstrap'
 import { gql, useMutation } from '@apollo/client';
+import {Link} from 'react-router-dom'
 
 export default function Register(props) {
 
@@ -15,7 +16,7 @@ export default function Register(props) {
 
     const [register, {loading}] = useMutation(REGISTER_USER, {
         update(cache, res) {
-            props.history.push('/')
+            props.history.push('/login')
         },
         onError(err) {
             console.log(err)
@@ -68,6 +69,8 @@ export default function Register(props) {
                             <Button variant="success" type="submit" disabled= {loading}>
                                 {loading ? 'loading..' : 'Register' }
                             </Button>
+                            <br />
+                            <small> Already have an account?<Link to="/login">Login</Link></small>
                         </div>
                     </Form>
                 </Col>
