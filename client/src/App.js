@@ -6,6 +6,7 @@ import {BrowserRouter, Route, Switch} from 'react-router-dom'
 import login from './components/login';
 import home from './components/home';
 import {AuthProvider} from './components/context'
+import Protected from './util/protected'
 
 function App() {
   return (
@@ -14,9 +15,9 @@ function App() {
         <BrowserRouter> 
           <Container className="pt-5">
             <Switch>
-              <Route exact path="/" component={home} />
-              <Route path="/login" component={login} />
-              <Route path="/register" component={Register} />
+              <Protected exact path="/" component={home} authenticated/>
+              <Protected path="/login" component={login} guest/>
+              <Protected path="/register" component={Register} guest/>
             </Switch>
           </Container>
         </BrowserRouter>
