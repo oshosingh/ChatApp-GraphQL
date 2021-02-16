@@ -4,7 +4,7 @@ import ApolloProvider from './ApolloProvider'
 import {Container} from 'react-bootstrap'
 import {BrowserRouter, Route, Switch} from 'react-router-dom'
 import login from './components/login';
-import home from './components/home';
+import home from './components/home/home';
 import {AuthProvider} from './components/context'
 import Protected from './util/protected'
 
