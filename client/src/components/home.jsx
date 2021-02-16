@@ -1,15 +1,20 @@
-import React from 'react'
-import {Row, Col, Button} from 'react-bootstrap'
+import React, { useState, useEffect } from 'react'
+import {Row, Col, Button, Image} from 'react-bootstrap'
 import {Link} from 'react-router-dom'
 import {useAuthDispatch} from './context'
-import {gql, useQuery} from '@apollo/client'
+import {gql, useQuery, useLazyQuery} from '@apollo/client'
 
 export default function Home(props) {
+
+    const [selectedUser, setSelectedUser] = useState(null)
 
     const GET_USERS = gql`
         query getUsers{
             getUsers{
-                username email createdAt
+                username createdAt imageUrl
+                latestMessage{
+                    uuid from to createdAt content
+                }
             }
         }
     `;
@@ -25,11 +30,34 @@ export default function Home(props) {
     else{
         usersMarkup = data.getUsers.map( (found) => {
             return(
-            <div key={found.username}>
-                <p>  {found.username}</p>
+            <div className="d-flex p-3" key={found.username} onClick = {() => setSelectedUser(found.username)}>
+                <Image src={found.imageUrl} roundedCircle className="mr-2" style={{ width: 50, height:50, objectFit: 'cover' }} />
+                <div>
+                    <p className="text-success">  {found.username}</p>
+                    <p className="font-weight-light">
+                        {found.latestMessage ? found.latestMessage.content : 'You are now connected'}
+                    </p>
+                </div>
             </div>)
         } )
     }
+
+    const GET_MESSAGES = gql`
+        query getMessages($from: String!){
+            getMessages(from : $from){
+                uuid from to content createdAt
+            }
+        }
+    `;
+    
+    const [getMessages, {loading: messagesLoading, data: messagesData}] = useLazyQuery(GET_MESSAGES)
+
+    useEffect( () => {
+        if(selectedUser){
+            getMessages({variables: {from: selectedUser}})
+        }
+    }, [selectedUser] )
+
 
     const dispatch = useAuthDispatch()
     const handleLogout = (e) => {
@@ -50,11 +78,17 @@ export default function Home(props) {
             </Row>
 
             <Row className="bg-white mt-2 ">
-                <Col xs={4}>
+                <Col xs={4} className="p-0 bg-secondary">
                     {usersMarkup}
                 </Col>
                 <Col xs={8}>
-                    <p> Messages </p>
+                    {messagesData && messagesData.getMessages.length>0 ? (
+                        messagesData.getMessages.map( message => (
+                            <p key={message.uuid}>
+                                {message.content}
+                            </p>
+                        ))
+                    ) : <p> You are now connected</p>}
                 </Col>
             </Row>
         </>
