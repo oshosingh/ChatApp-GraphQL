@@ -12,7 +12,7 @@ export default function Home(props) {
     const dispatch = useAuthDispatch()
     const handleLogout = (e) => {
         dispatch({type: "LOGOUT"})
-        props.history.push("/login")
+        window.location.href = '/login'
     }
 
     return (
