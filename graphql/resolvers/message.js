@@ -75,6 +75,6 @@ module.exports = {
     Subsription: {
         newMessage: {
             subscribe: () => pubsub.asyncIterator(['NEW_MESSAGE'])
-        }
+        },
     }
   };
