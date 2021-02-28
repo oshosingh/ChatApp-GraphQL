@@ -74,7 +74,12 @@ module.exports = {
     },
     Subsription: {
         newMessage: {
-            subscribe: () => pubsub.asyncIterator(['NEW_MESSAGE'])
+            subscribe: (_, __, {user}) => {
+                if(!user){
+                    throw new AuthenticationError('UnAuthebticated')
+                }
+                return pubsub.asyncIterator(['NEW_MESSAGE'])
+            }
         },
     }
   };
